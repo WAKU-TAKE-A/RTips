@@ -10,3 +10,8 @@
     * [Rcpp入門](https://nbviewer.jupyter.org/github/waku-take-a/RTips/blob/master/Rcpp_Getting_Started_000.ipynb) 
     * [Rcpp入門 その2](https://nbviewer.jupyter.org/github/waku-take-a/RTips/blob/master/Rcpp_Getting_Started_001.ipynb) 
     * [Rcpp入門 その3](https://nbviewer.jupyter.org/github/waku-take-a/RTips/blob/master/Rcpp_Getting_Started_002.ipynb) 
+
+----
+[ホームへ](https://waku-take-a.github.io/index.html) 
+
+<(_ _)>
