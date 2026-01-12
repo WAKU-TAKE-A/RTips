@@ -1,0 +1,42 @@
+name: Convert notebooks to HTML and deploy to gh-pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "**/*.ipynb"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install nbconvert
+        run: |
+          pip install nbconvert jupyter
+
+      - name: Convert notebooks to HTML
+        run: |
+          mkdir -p output_html
+          jupyter nbconvert \
+            --to html \
+            --output-dir output_html \
+            *.ipynb
+
+      - name: Deploy HTML to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./output_html
+          keep_files: true
