@@ -5,8 +5,14 @@ on:
     branches:
       - main
       - master
-    paths:
-      - "**/*.ipynb"
+    # もしすべての push で実行したければ以下の paths を削除してください
+    #paths:
+      #- "**/*.ipynb"
+  workflow_dispatch:
+
+permissions:
+  contents: write    # ブランチ作成/更新のため
+  pages: write       # GitHub Pages 更新のため
 
 jobs:
   build:
@@ -23,15 +29,26 @@ jobs:
 
       - name: Install nbconvert
         run: |
+          pip install --upgrade pip
           pip install nbconvert jupyter
 
-      - name: Convert notebooks to HTML
+      - name: Show repo files (debug)
+        run: |
+          echo "CWD: $(pwd)"
+          echo "List repository (top):"
+          ls -la
+          echo "Find all .ipynb files (recursive):"
+          find . -type f -name "*.ipynb" -not -path "./.git/*" || true
+
+      - name: Convert notebooks to HTML (recursive)
         run: |
           mkdir -p output_html
-          jupyter nbconvert \
-            --to html \
-            --output-dir output_html \
-            *.ipynb
+          # find で見つかった各ノートブックを output_html に変換する
+          # ファイル名に空白があっても安全に動くように -print0 / xargs -0 を使用
+          find . -type f -name "*.ipynb" -not -path "./.git/*" -print0 \
+            | xargs -0 -I {} bash -c 'echo "Converting: {}"; jupyter nbconvert --to html --output-dir output_html "{}"'
+          echo "Converted files in output_html:"
+          ls -la output_html || true
 
       - name: Deploy HTML to gh-pages
         uses: peaceiris/actions-gh-pages@v4
